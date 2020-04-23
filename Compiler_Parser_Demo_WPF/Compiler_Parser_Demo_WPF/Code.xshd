@@ -1,0 +1,46 @@
+﻿<?xml version="1.0"?>
+<SyntaxDefinition name="Production" extensions=".prod" xmlns="http://icsharpcode.net/sharpdevelop/syntaxdefinition/2008">
+    <!-- The named colors 'Comment' and 'String' are used in SharpDevelop to detect if a line is inside a multiline string/comment -->
+    <Color name="Comment" foreground="#ff57a64a"/>
+    <Color name="String" foreground="#ffd69d85" />
+    <Color name="Punctuation" foreground="#ff4ec9b0" fontWeight="bold"/>
+    <Color name="Identifier" foreground="#ff569cd6" fontWeight="bold"/>
+    <Color name="ProductIdentifier" foreground="#ffdcdcaa" fontWeight="bold"/>
+
+    <!-- This is the main ruleset. -->
+    <RuleSet>
+        <Span color="Comment" multiline="true">
+            <Begin>/\*</Begin>
+            <End>\*/</End>
+        </Span>
+
+        <Span color="Comment">
+            <Begin>//</Begin>
+        </Span>
+
+        <Span color="String">
+            <Begin>"</Begin>
+            <End>"</End>
+            <RuleSet>
+                <!-- span for escape sequences -->
+                <Span begin="\\" end="."/>
+            </RuleSet>
+        </Span>
+
+        <Keywords color="Punctuation">
+            <Word>-></Word>
+            <Word>|</Word>
+            <Word>;</Word>
+        </Keywords>
+        
+        <Rule color="Identifier">
+            \&lt;
+            [0-9A-Za-z_]*
+            \&gt;  
+        </Rule>
+
+        <Rule color="ProductIdentifier">
+            [0-9A-Za-z_]+
+        </Rule>
+    </RuleSet>
+</SyntaxDefinition>
