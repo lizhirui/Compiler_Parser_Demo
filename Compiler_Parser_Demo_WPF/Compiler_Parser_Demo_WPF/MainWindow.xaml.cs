@@ -40,6 +40,7 @@ namespace Compiler_Parser_Demo_WPF
                 using(var reader = new XmlTextReader(s))
                 {
                     CodeEditor.SyntaxHighlighting = HighlightingLoader.Load(reader,HighlightingManager.Instance);
+                    CodeEditor_Converted.SyntaxHighlighting = CodeEditor.SyntaxHighlighting;
                 }
             }
 
@@ -77,6 +78,80 @@ namespace Compiler_Parser_Demo_WPF
                 {
                     completionWindow = null;
                 };
+            }
+        }
+
+        private void Button_Convert_Click(object sender,RoutedEventArgs e)
+        {
+            Production_Lexer lexer = new Production_Lexer();
+
+            if(lexer.Analysis(CodeEditor.Text))
+            {
+                CodeEditor_Converted.Text = "Lexer Execute OK!\n";
+
+                Production_Parser parser = new Production_Parser();
+
+                if(parser.Analysis(lexer.Result))
+                {
+                    CodeEditor_Converted.Text += "Parser Execute OK!\n";
+                    var stb = new StringBuilder();
+
+                    foreach(var item in parser.NonTerminalProductionResult)
+                    {
+                        stb.Append(item.Name + " -> ");
+                        var first = true;
+
+                        foreach(var item2 in item.Item)
+                        {
+                            if(first)
+                            {
+                                first = false;
+                            }
+                            else
+                            {
+                                stb.Append("\n" + new string(' ',item.Name.Length + 2) + "| ");
+                            }
+
+                            var first2 = true;
+
+                            foreach(var item3 in item2.Content)
+                            {
+                                if(first2)
+                                {
+                                    first2 = false;
+                                }
+                                else
+                                {
+                                    stb.Append(" ");
+                                }
+
+                                stb.Append("<" + item3 + ">");
+                            }
+                        }
+
+                        stb.Append(";\n");
+
+                        if(item.Item.Length > 0)
+                        {
+                            stb.Append("\n");
+                        }
+                    }
+
+                    foreach(var item in parser.TerminalProductionResult)
+                    {
+                        stb.Append(item.Name + " -> \"" + item.RegularExpression + "\";\n");
+                    }
+
+                    CodeEditor_Converted.Text += "\n" + stb.ToString();
+                }
+                else
+                {
+                    CodeEditor_Converted.Text += parser.ErrorMsg;
+                }
+            }
+            else
+            {
+                CodeEditor_Converted.Text = lexer.ErrorMsg;
             }
         }
     }

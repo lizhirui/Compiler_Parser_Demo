@@ -6,11 +6,18 @@
         xmlns:local="clr-namespace:Compiler_Parser_Demo_WPF"
         xmlns:avalonedit="http://icsharpcode.net/sharpdevelop/avalonedit" x:Class="Compiler_Parser_Demo_WPF.MainWindow"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800" Background="#ff1e1e1e" Foreground="#ffc8c8c8">
-    <Grid>
-        <avalonedit:TextEditor x:Name="CodeEditor" HorizontalAlignment="Left" Margin="48,34,0,0" VerticalAlignment="Top" 
-            Height="370" Width="662" SyntaxHighlighting="C#" FontFamily="Consolas" FontSize="10pt" Background="#ff1e1e1e" 
+        Title="Compiler_Parser_Demo by lizhirui" Height="700" Width="1000" Background="#ff1e1e1e" Foreground="#ffc8c8c8">
+    <Grid Margin="0,0,-562,-58">
+        <avalonedit:TextEditor x:Name="CodeEditor" HorizontalAlignment="Left" Margin="10,43,0,0" VerticalAlignment="Top" 
+            Height="530" Width="372" SyntaxHighlighting="C#" FontFamily="Consolas" FontSize="10pt" Background="#ff1e1e1e" 
             Foreground="#ffc8c8c8" ScrollViewer.HorizontalScrollBarVisibility="Hidden" ScrollViewer.VerticalScrollBarVisibility="Hidden"
-            ShowLineNumbers="True"/>
+            ShowLineNumbers="True" WordWrap="True"/>
+        <Label Content="产生式：" HorizontalAlignment="Left" Margin="27,6,0,0" VerticalAlignment="Top" Foreground="#ffc8c8c8"/>
+        <avalonedit:TextEditor x:Name="CodeEditor_Converted" HorizontalAlignment="Left" Margin="387,43,0,0" VerticalAlignment="Top" 
+            Height="530" Width="564" SyntaxHighlighting="C#" FontFamily="Consolas" FontSize="10pt" Background="#ff1e1e1e" 
+            Foreground="#ffc8c8c8" ScrollViewer.HorizontalScrollBarVisibility="Hidden" ScrollViewer.VerticalScrollBarVisibility="Hidden"
+            ShowLineNumbers="True" IsReadOnly="True" WordWrap="True"/>
+        <Label Content="转换后产生式：" HorizontalAlignment="Left" Margin="422,6,0,0" VerticalAlignment="Top" Foreground="#ffc8c8c8"/>
+        <Button x:Name="Button_Convert" Content="->" HorizontalAlignment="Left" Margin="362,6,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.546,0.694" Click="Button_Convert_Click"/>
     </Grid>
 </Window>
