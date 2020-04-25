@@ -4,11 +4,19 @@ using System.Text;
 
 namespace Compiler_Parser_Demo_WPF
 {
-    class Production_Parser
+    class Production_Parser : ITask
     {
+        private bool Changed = false;
+
         private class ParserAnalysisException : Exception
         {
             
+        }
+
+        public struct ResultInfo
+        {
+            public NonTerminalProductionInfo[] ntplist;
+            public TerminalProductionInfo[] tplist;
         }
 
         public struct NonTerminalProductionInfo
@@ -40,6 +48,14 @@ namespace Compiler_Parser_Demo_WPF
             private set;
         }
 
+        public ResultInfo Result
+        {
+            get
+            {
+                return new ResultInfo{ntplist = NonTerminalProductionResult,tplist = TerminalProductionResult};
+            }
+        }
+
         public string ErrorMsg
         {
             get;
@@ -47,6 +63,12 @@ namespace Compiler_Parser_Demo_WPF
         }
 
         public Production_Lexer.WordInfo[] WordList
+        {
+            get;
+            private set;
+        }
+
+        public string ProductionCode
         {
             get;
             private set;
@@ -64,6 +86,7 @@ namespace Compiler_Parser_Demo_WPF
         public Production_Parser()
         {
             ErrorMsg = "";
+            ProductionCode = "";
         }
 
         private void GenerateError(string ErrorTitle)
@@ -222,6 +245,59 @@ namespace Compiler_Parser_Demo_WPF
             }
         }
 
+        private void GenerateProductionCode()
+        {
+            var stb = new StringBuilder();
+
+            foreach(var item in NonTerminalProductionResult)
+            {
+                stb.Append(item.Name + " -> ");
+                var first = true;
+
+                foreach(var item2 in item.Item)
+                {
+                    if(first)
+                    {
+                        first = false;
+                    }
+                    else
+                    {
+                        stb.Append("\n" + new string(' ',item.Name.Length + 2) + "| ");
+                    }
+
+                    var first2 = true;
+
+                    foreach(var item3 in item2.Content)
+                    {
+                        if(first2)
+                        {
+                            first2 = false;
+                        }
+                        else
+                        {
+                            stb.Append(" ");
+                        }
+
+                        stb.Append("<" + item3 + ">");
+                    }
+                }
+
+                stb.Append(";\n");
+
+                if(item.Item.Length > 0)
+                {
+                    stb.Append("\n");
+                }
+            }
+
+            foreach(var item in TerminalProductionResult)
+            {
+                stb.Append(item.Name + " -> \"" + item.RegularExpression + "\";\n");
+            }
+
+            ProductionCode = stb.ToString();
+        }
+
         public bool Analysis(Production_Lexer.WordInfo[] WordList)
         {
             List<NonTerminalProductionInfo> ntplist = new List<NonTerminalProductionInfo>();
@@ -261,6 +337,7 @@ namespace Compiler_Parser_Demo_WPF
             {
                 NonTerminalProductionResult = null;
                 TerminalProductionResult = null;
+                ProductionCode = "";
                 return false;
             }
             catch(Exception ex)
@@ -268,13 +345,32 @@ namespace Compiler_Parser_Demo_WPF
                 NonTerminalProductionResult = null;
                 TerminalProductionResult = null;
                 ErrorMsg = ex.Message + "\n" + ex.StackTrace;
+                ProductionCode = "";
                 return false;
             }
             
             NonTerminalProductionResult = ntplist.ToArray();
             TerminalProductionResult = tplist.ToArray();
             ErrorMsg = "";
+            GenerateProductionCode();
             return true;
+        }
+
+        public bool MoveFrom(object obj)
+        {
+            Changed = true;
+            return Analysis(obj as Production_Lexer.WordInfo[]);
+        }
+
+        public object MoveTo()
+        {
+            Changed = false;
+            return Result;
+        }
+
+        public bool ResultChanged()
+        {
+            return Changed;
         }
     }
 }

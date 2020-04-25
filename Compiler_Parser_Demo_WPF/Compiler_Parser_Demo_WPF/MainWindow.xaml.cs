@@ -27,6 +27,7 @@ namespace Compiler_Parser_Demo_WPF
     public partial class MainWindow : Window
     {
         private CompletionWindow completionWindow;
+        private TaskFlowManager taskFlowManager = new TaskFlowManager();
 
         public MainWindow()
         {
@@ -46,6 +47,42 @@ namespace Compiler_Parser_Demo_WPF
 
             CodeEditor.TextArea.TextEntering += CodeEditor_TextArea_TextEntering;
             CodeEditor.TextArea.TextEntered += TextArea_TextEntered;
+
+            taskFlowManager.TaskResultUpdated += TaskFlowManager_TaskResultUpdated;
+            taskFlowManager.TaskResultCleared += TaskFlowManager_TaskResultCleared;
+
+            taskFlowManager.AddTask<DataSource_FromCodeEditor>();
+            taskFlowManager.AddTask<Production_Lexer>();
+            taskFlowManager.AddTask<Production_Parser>();
+
+            taskFlowManager.GetTask<DataSource_FromCodeEditor>().BindEditor(CodeEditor);
+        }
+
+        private void TaskFlowManager_TaskResultCleared(TaskFlowManager Sender,Type TaskType)
+        {
+            if(TaskType == typeof(Production_Lexer))
+            {
+                TextBox_Info.Text = Sender.GetTask<Production_Lexer>().ErrorMsg;
+                CodeEditor_Converted.Text = "";
+            }
+            else if(TaskType == typeof(Production_Parser))
+            {
+                TextBox_Info.Text += Sender.GetTask<Production_Parser>().ErrorMsg;
+                CodeEditor_Converted.Text = "";
+            }
+        }
+
+        private void TaskFlowManager_TaskResultUpdated(TaskFlowManager Sender,Type TaskType)
+        {
+            if(TaskType == typeof(Production_Lexer))
+            {
+                TextBox_Info.Text = "Lexer Execute OK!\n";
+            }
+            else if(TaskType == typeof(Production_Parser))
+            {
+                TextBox_Info.Text += "Parser Execute OK!\n";
+                CodeEditor_Converted.Text = Sender.GetTask<Production_Parser>().ProductionCode;
+            }
         }
 
         private void TextArea_TextEntered(object sender,TextCompositionEventArgs e)
@@ -83,76 +120,7 @@ namespace Compiler_Parser_Demo_WPF
 
         private void Button_Convert_Click(object sender,RoutedEventArgs e)
         {
-            Production_Lexer lexer = new Production_Lexer();
-
-            if(lexer.Analysis(CodeEditor.Text))
-            {
-                CodeEditor_Converted.Text = "Lexer Execute OK!\n";
-
-                Production_Parser parser = new Production_Parser();
-
-                if(parser.Analysis(lexer.Result))
-                {
-                    CodeEditor_Converted.Text += "Parser Execute OK!\n";
-                    var stb = new StringBuilder();
-
-                    foreach(var item in parser.NonTerminalProductionResult)
-                    {
-                        stb.Append(item.Name + " -> ");
-                        var first = true;
-
-                        foreach(var item2 in item.Item)
-                        {
-                            if(first)
-                            {
-                                first = false;
-                            }
-                            else
-                            {
-                                stb.Append("\n" + new string(' ',item.Name.Length + 2) + "| ");
-                            }
-
-                            var first2 = true;
-
-                            foreach(var item3 in item2.Content)
-                            {
-                                if(first2)
-                                {
-                                    first2 = false;
-                                }
-                                else
-                                {
-                                    stb.Append(" ");
-                                }
-
-                                stb.Append("<" + item3 + ">");
-                            }
-                        }
-
-                        stb.Append(";\n");
-
-                        if(item.Item.Length > 0)
-                        {
-                            stb.Append("\n");
-                        }
-                    }
-
-                    foreach(var item in parser.TerminalProductionResult)
-                    {
-                        stb.Append(item.Name + " -> \"" + item.RegularExpression + "\";\n");
-                    }
-
-                    CodeEditor_Converted.Text += "\n" + stb.ToString();
-                }
-                else
-                {
-                    CodeEditor_Converted.Text += parser.ErrorMsg;
-                }
-            }
-            else
-            {
-                CodeEditor_Converted.Text = lexer.ErrorMsg;
-            }
+            taskFlowManager.RunTask<Production_Parser>();
         }
     }
 }

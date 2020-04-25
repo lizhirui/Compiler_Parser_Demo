@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 
 namespace Compiler_Parser_Demo_WPF
 {
-    class Production_Lexer
+    class Production_Lexer : ITask
     {
         public enum WordType
         {
@@ -53,6 +53,8 @@ namespace Compiler_Parser_Demo_WPF
         private int CurLine;
         private int CurColumn;
         private int CurPos;
+
+        private bool Changed = false;
 
         public Production_Lexer()
         {
@@ -310,6 +312,23 @@ namespace Compiler_Parser_Demo_WPF
             Result = rlist.ToArray();
             ErrorMsg = "";
             return true;
+        }
+
+        public bool MoveFrom(object obj)
+        {
+            Changed = true;
+            return Analysis(obj as string);
+        }
+
+        public object MoveTo()
+        {
+            Changed = false;
+            return Result;
+        }
+
+        public bool ResultChanged()
+        {
+            return Changed;
         }
     }
 }
