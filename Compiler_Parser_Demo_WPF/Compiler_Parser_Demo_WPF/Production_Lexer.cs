@@ -305,7 +305,7 @@ namespace Compiler_Parser_Demo_WPF
             catch(Exception ex)
             {
                 Result = null;
-                ErrorMsg = ex.Message + "\n" + ex.StackTrace;
+                ErrorMsg = "[Lexer]" + ex.Message + "\n" + ex.StackTrace;
                 return false;
             }
 

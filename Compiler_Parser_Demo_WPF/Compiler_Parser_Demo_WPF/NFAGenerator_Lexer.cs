@@ -20,7 +20,7 @@ namespace Compiler_Parser_Demo_WPF
             RightBrace,
             Or,
             Star,
-            String
+            Char
         }
 
         public struct WordInfo
@@ -62,33 +62,30 @@ namespace Compiler_Parser_Demo_WPF
         private void AnalysisItem(List<WordInfo[]> rlist,string curexpression)
         {
             var len = curexpression.Length;
-            var curstr = new StringBuilder();
             var curlist = new List<WordInfo>();
             var i = 0;
                 
             while(i < len)
             {
-                var defaultdealed = false;
-
                 switch(curexpression[i])
                 {
                     case '(':
-                        curlist.Add(new WordInfo{Type = WordType.LeftBrace,StartPos = i,Length = 1,AdditionInfo = null});
+                        curlist.Add(new WordInfo{Type = WordType.LeftBrace,StartPos = i,Length = 1,AdditionInfo = '('});
                         i++;
                         break;
 
                     case ')':
-                        curlist.Add(new WordInfo{Type = WordType.RightBrace,StartPos = i,Length = 1,AdditionInfo = null});
+                        curlist.Add(new WordInfo{Type = WordType.RightBrace,StartPos = i,Length = 1,AdditionInfo = ')'});
                         i++;
                         break;
 
                     case '|':
-                        curlist.Add(new WordInfo{Type = WordType.Or,StartPos = i,Length = 1,AdditionInfo = null});
+                        curlist.Add(new WordInfo{Type = WordType.Or,StartPos = i,Length = 1,AdditionInfo = '|'});
                         i++;
                         break;
 
                     case '*':
-                        curlist.Add(new WordInfo{Type = WordType.Star,StartPos = i,Length = 1,AdditionInfo = null});
+                        curlist.Add(new WordInfo{Type = WordType.Star,StartPos = i,Length = 1,AdditionInfo = '*'});
                         i++;
                         break;
 
@@ -99,23 +96,16 @@ namespace Compiler_Parser_Demo_WPF
                         }
                         else
                         {
-                            curstr.Append(curexpression[i + 1]);
+                            curlist.Add(new WordInfo{Type = WordType.Char,StartPos = i,Length = 2,AdditionInfo = curexpression[i + 1]});
                             i += 2;
                         }
 
                         break;
 
                     default:
-                        defaultdealed = true;
-                        curstr.Append(curexpression[i]);
+                        curlist.Add(new WordInfo{Type = WordType.Char,StartPos = i,Length = 1,AdditionInfo = curexpression[i]});
                         i++;
                         break;
-                }
-
-                if(!defaultdealed)
-                {
-                    var tstr = curstr.ToString();
-                    curlist.Add(new WordInfo{Type = WordType.String,StartPos = i - tstr.Length,Length = tstr.Length,AdditionInfo = tstr});
                 }
             }
 
@@ -143,7 +133,7 @@ namespace Compiler_Parser_Demo_WPF
             catch(Exception ex)
             {
                 Result = new ResultInfo{ParserResult = new Production_Parser.ResultInfo{ntplist = null,tplist = null},WordList = null};
-                ErrorMsg = ex.Message + "\n" + ex.StackTrace;
+                ErrorMsg = "[NFAGenerator_Lexer]" + ex.Message + "\n" + ex.StackTrace;
                 return false;
             }
 
@@ -155,13 +145,13 @@ namespace Compiler_Parser_Demo_WPF
         public bool MoveFrom(object obj)
         {
             Changed = true;
-            return true;
+            return Analysis((Production_Parser.ResultInfo)obj);
         }
 
         public object MoveTo()
         {
             Changed = false;
-            return null;
+            return Result;
         }
 
         public bool ResultChanged()

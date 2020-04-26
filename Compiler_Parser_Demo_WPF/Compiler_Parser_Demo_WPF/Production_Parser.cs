@@ -344,7 +344,7 @@ namespace Compiler_Parser_Demo_WPF
             {
                 NonTerminalProductionResult = null;
                 TerminalProductionResult = null;
-                ErrorMsg = ex.Message + "\n" + ex.StackTrace;
+                ErrorMsg = "[Parser]" + ex.Message + "\n" + ex.StackTrace;
                 ProductionCode = "";
                 return false;
             }

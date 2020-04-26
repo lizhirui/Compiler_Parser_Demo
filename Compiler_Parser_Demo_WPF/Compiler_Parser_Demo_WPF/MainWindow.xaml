@@ -9,33 +9,47 @@
         Title="Compiler_Parser_Demo by lizhirui" Height="800" Width="1550" Background="#ff1e1e1e" Foreground="#ffc8c8c8" WindowStartupLocation="CenterScreen"
         WindowState="Maximized">
     <Grid Margin="0,0,0,0">
-        <ScrollViewer>
+        <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
             <Grid Margin="0,0,0,0">
-                <avalonedit:TextEditor x:Name="CodeEditor" HorizontalAlignment="Left" Margin="10,43,0,0" VerticalAlignment="Top" 
-                Height="530" Width="628" SyntaxHighlighting="C#" FontFamily="Consolas" FontSize="10pt" Background="#ff1e1e1e" 
-                Foreground="#ffc8c8c8" ScrollViewer.HorizontalScrollBarVisibility="Hidden" ScrollViewer.VerticalScrollBarVisibility="Hidden"
-                ShowLineNumbers="True" WordWrap="True" BorderBrush="#ffc8c8c8" BorderThickness="1"/>
-                <Label Content="产生式：" HorizontalAlignment="Left" Margin="27,6,0,0" VerticalAlignment="Top" Foreground="#ffc8c8c8"/>
-                <avalonedit:TextEditor x:Name="CodeEditor_Converted" HorizontalAlignment="Left" Margin="643,43,0,0" VerticalAlignment="Top" 
-                Height="530" Width="628" SyntaxHighlighting="C#" FontFamily="Consolas" FontSize="10pt" Background="#ff1e1e1e" 
-                Foreground="#ffc8c8c8" ScrollViewer.HorizontalScrollBarVisibility="Hidden" ScrollViewer.VerticalScrollBarVisibility="Hidden"
-                ShowLineNumbers="True" IsReadOnly="True" WordWrap="True" BorderBrush="#ffc8c8c8" BorderThickness="1"/>
-                <Label Content="转换后产生式：" HorizontalAlignment="Left" Margin="662,6,0,0" VerticalAlignment="Top" Foreground="#ffc8c8c8"/>
-                <Button x:Name="Button_Convert" Content="->" HorizontalAlignment="Left" Margin="618,10,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.546,0.694" Click="Button_Convert_Click"/>
-                <Button x:Name="Button_NFAGenerate" Content="  NFA生成  " HorizontalAlignment="Left" Margin="1359,40,0,0" VerticalAlignment="Top"/>
-                <Button x:Name="Button_DFAGenerate" Content="NFA->DFA" HorizontalAlignment="Left" Margin="1359,70,0,0" VerticalAlignment="Top"/>
-                <Button x:Name="Button_DFAOptimise" Content="  DFA优化  " HorizontalAlignment="Left" Margin="1359,100,0,0" VerticalAlignment="Top"/>
-                <Label Content="语法分析方法：" HorizontalAlignment="Left" Margin="1339,140,0,0" VerticalAlignment="Top"  Foreground="#ffc8c8c8"/>
-                <ComboBox x:Name="ComboBox_GrammerMajorType" HorizontalAlignment="Left" Margin="1285,170,0,0" VerticalAlignment="Top" Width="230" Background="#ff1e1e1e" Foreground="#ffc8c8c8" />
-                <ComboBox x:Name="ComboBox_GrammarMinorType" HorizontalAlignment="Left" Margin="1285,200,0,0" VerticalAlignment="Top" Width="230" Background="#ff1e1e1e" Foreground="#ffc8c8c8"/>
-                <Button x:Name="Button_GrammarCompile" Content="文法编译" HorizontalAlignment="Left" Margin="1321,230,0,0" VerticalAlignment="Top"/>
-                <avalonedit:TextEditor x:Name="CodeEditor_GrammarTest" HorizontalAlignment="Left" Margin="1285,270,0,0" VerticalAlignment="Top" 
-                Height="504" Width="230" SyntaxHighlighting="C#" FontFamily="Consolas" FontSize="10pt" Background="#ff1e1e1e" 
-                Foreground="#ffc8c8c8" ScrollViewer.HorizontalScrollBarVisibility="Hidden" ScrollViewer.VerticalScrollBarVisibility="Hidden"
-                ShowLineNumbers="True" WordWrap="True" BorderBrush="#ffc8c8c8" BorderThickness="1"/>
-                <Button x:Name="Button_GrammarTest" Content="文法测试" HorizontalAlignment="Left" Margin="1412,230,0,0" VerticalAlignment="Top"/>
-                <TextBox x:Name="TextBox_Info" HorizontalAlignment="Left" Margin="10,600,0,0" Text="" TextWrapping="Wrap" VerticalAlignment="Top" 
-                AcceptsReturn="True" VerticalScrollBarVisibility="Auto" Width="1261" Height="174" IsReadOnly="True" Background="#ff1e1e1e" Foreground="#ffc8c8c8"/>
+                <TabControl x:Name="TabControl_Main" HorizontalAlignment="Left" Margin="0,0,0,0" VerticalAlignment="Top" Height="800" Width="1550" Background="#ff1e1e1e" Foreground="#ffc8c8c8">
+                    <TabItem Header="主窗口">
+                        <Grid>
+                            <avalonedit:TextEditor x:Name="CodeEditor" HorizontalAlignment="Left" Margin="10,43,0,0" VerticalAlignment="Top" 
+                            Height="530" Width="628" SyntaxHighlighting="C#" FontFamily="Consolas" FontSize="10pt" Background="#ff1e1e1e" 
+                            Foreground="#ffc8c8c8" ScrollViewer.HorizontalScrollBarVisibility="Hidden" ScrollViewer.VerticalScrollBarVisibility="Hidden"
+                            ShowLineNumbers="True" WordWrap="True" BorderBrush="#ffc8c8c8" BorderThickness="1"/>
+                            <Label Content="产生式：" HorizontalAlignment="Left" Margin="27,6,0,0" VerticalAlignment="Top" Foreground="#ffc8c8c8"/>
+                            <avalonedit:TextEditor x:Name="CodeEditor_Converted" HorizontalAlignment="Left" Margin="643,43,0,0" VerticalAlignment="Top" 
+                            Height="530" Width="628" SyntaxHighlighting="C#" FontFamily="Consolas" FontSize="10pt" Background="#ff1e1e1e" 
+                            Foreground="#ffc8c8c8" ScrollViewer.HorizontalScrollBarVisibility="Hidden" ScrollViewer.VerticalScrollBarVisibility="Hidden"
+                            ShowLineNumbers="True" IsReadOnly="True" WordWrap="True" BorderBrush="#ffc8c8c8" BorderThickness="1"/>
+                            <Label Content="转换后产生式：" HorizontalAlignment="Left" Margin="662,6,0,0" VerticalAlignment="Top" Foreground="#ffc8c8c8"/>
+                            <Button x:Name="Button_Convert" Content="->" HorizontalAlignment="Left" Margin="618,10,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.546,0.694" Click="Button_Convert_Click"/>
+                            <Button x:Name="Button_NFAGenerate" Content="  NFA生成  " HorizontalAlignment="Left" Margin="1359,40,0,0" VerticalAlignment="Top" Click="Button_NFAGenerate_Click"/>
+                            <Button x:Name="Button_DFAGenerate" Content="NFA->DFA" HorizontalAlignment="Left" Margin="1359,70,0,0" VerticalAlignment="Top"/>
+                            <Button x:Name="Button_DFAOptimise" Content="  DFA优化  " HorizontalAlignment="Left" Margin="1359,100,0,0" VerticalAlignment="Top"/>
+                            <Label Content="语法分析方法：" HorizontalAlignment="Left" Margin="1339,140,0,0" VerticalAlignment="Top"  Foreground="#ffc8c8c8"/>
+                            <ComboBox x:Name="ComboBox_GrammerMajorType" HorizontalAlignment="Left" Margin="1285,170,0,0" VerticalAlignment="Top" Width="230" Background="#ff1e1e1e" Foreground="#ffc8c8c8" />
+                            <ComboBox x:Name="ComboBox_GrammarMinorType" HorizontalAlignment="Left" Margin="1285,200,0,0" VerticalAlignment="Top" Width="230" Background="#ff1e1e1e" Foreground="#ffc8c8c8"/>
+                            <Button x:Name="Button_GrammarCompile" Content="文法编译" HorizontalAlignment="Left" Margin="1321,230,0,0" VerticalAlignment="Top"/>
+                            <avalonedit:TextEditor x:Name="CodeEditor_GrammarTest" HorizontalAlignment="Left" Margin="1285,270,0,0" VerticalAlignment="Top" 
+                            Height="504" Width="230" SyntaxHighlighting="C#" FontFamily="Consolas" FontSize="10pt" Background="#ff1e1e1e" 
+                            Foreground="#ffc8c8c8" ScrollViewer.HorizontalScrollBarVisibility="Hidden" ScrollViewer.VerticalScrollBarVisibility="Hidden"
+                            ShowLineNumbers="True" WordWrap="True" BorderBrush="#ffc8c8c8" BorderThickness="1"/>
+                            <Button x:Name="Button_GrammarTest" Content="文法测试" HorizontalAlignment="Left" Margin="1412,230,0,0" VerticalAlignment="Top"/>
+                            <TextBox x:Name="TextBox_Info" HorizontalAlignment="Left" Margin="10,600,0,0" Text="" TextWrapping="Wrap" VerticalAlignment="Top" 
+                            AcceptsReturn="True" VerticalScrollBarVisibility="Auto" Width="1261" Height="174" IsReadOnly="True" Background="#ff1e1e1e" Foreground="#ffc8c8c8"/>
+                        </Grid>
+                    </TabItem>
+                    <TabItem Header="NFA图">
+                        <Grid>
+                            <ComboBox x:Name="ComboBox_RegularExpress" HorizontalAlignment="Center" Margin="0,20,0,0" VerticalAlignment="Top" Width="1000" Background="#ff1e1e1e" Foreground="#ffc8c8c8" SelectionChanged="ComboBox_RegularExpress_SelectionChanged"/>
+                            <ScrollViewer CanContentScroll="True" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Margin="0,100,0,0">
+                                <Image x:Name="Image_Diagram" HorizontalAlignment="Center" Margin="0,0,0,0" VerticalAlignment="Top" Stretch="None" />
+                            </ScrollViewer>
+                        </Grid>
+                    </TabItem>
+                </TabControl>
             </Grid>
         </ScrollViewer>
 
