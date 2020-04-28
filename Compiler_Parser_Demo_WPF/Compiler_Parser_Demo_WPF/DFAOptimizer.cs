@@ -93,7 +93,7 @@ namespace Compiler_Parser_Demo_WPF
                 }
                 else
                 {
-                    r.Append(DFANodeSetID[Node] + ",");
+                    r.Append(DFANodeSetID[nextnode[a]] + ",");
                 }
             }
 
