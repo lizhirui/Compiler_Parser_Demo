@@ -65,7 +65,7 @@ namespace Compiler_Parser_Demo_WPF
 
         private void GenerateError(string ErrorTitle,string ErrorString)
         {
-            ErrorMsg = "[Lexer]:" + ErrorTitle + "（行" + CurLine + "字符" + CurColumn + "）:\"" + ErrorString + "\"\n";
+            ErrorMsg = "[Production_Lexer]:" + ErrorTitle + "（行" + CurLine + "字符" + CurColumn + "）:\"" + ErrorString + "\"\n";
             throw new LexerAnalysisException();
         }
 
@@ -305,7 +305,7 @@ namespace Compiler_Parser_Demo_WPF
             catch(Exception ex)
             {
                 Result = null;
-                ErrorMsg = "[Lexer]" + ex.Message + "\n" + ex.StackTrace;
+                ErrorMsg = "[Production_Lexer]" + ex.Message + "\n" + ex.StackTrace;
                 return false;
             }
 

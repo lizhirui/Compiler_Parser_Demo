@@ -96,7 +96,7 @@ namespace Compiler_Parser_Demo_WPF
 
         private void GenerateError(string ErrorTitle,string ErrorString)
         {
-            ErrorMsg = "[Parser]:" + ErrorTitle + "（行" + WordList[CurIndex].Line + "字符" + WordList[CurIndex].Column + "）";
+            ErrorMsg = "[Production_Parser]:" + ErrorTitle + "（行" + WordList[CurIndex].Line + "字符" + WordList[CurIndex].Column + "）";
 
             if(ErrorString != "")
             {
@@ -344,7 +344,7 @@ namespace Compiler_Parser_Demo_WPF
             {
                 NonTerminalProductionResult = null;
                 TerminalProductionResult = null;
-                ErrorMsg = "[Parser]" + ex.Message + "\n" + ex.StackTrace;
+                ErrorMsg = "[Production_Parser]" + ex.Message + "\n" + ex.StackTrace;
                 ProductionCode = "";
                 return false;
             }

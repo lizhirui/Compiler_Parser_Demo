@@ -29,6 +29,7 @@ namespace Compiler_Parser_Demo_WPF
         private CompletionWindow completionWindow;
         private TaskFlowManager taskFlowManager = new TaskFlowManager();
         private BitmapImage[] NFAImage = new BitmapImage[0];
+        private BitmapImage[] DFAImage = new BitmapImage[0];
 
         public MainWindow()
         {
@@ -57,6 +58,7 @@ namespace Compiler_Parser_Demo_WPF
             taskFlowManager.AddTask<Production_Parser>();
             taskFlowManager.AddTask<NFAGenerator_Lexer>();
             taskFlowManager.AddTask<NFAGenerator_Parser>();
+            taskFlowManager.AddTask<DFAGenerator>();
 
             taskFlowManager.GetTask<DataSource_FromCodeEditor>().BindEditor(CodeEditor);
         }
@@ -80,8 +82,8 @@ namespace Compiler_Parser_Demo_WPF
             else if(TaskType == typeof(NFAGenerator_Parser))
             {
                 TextBox_Info.Text += Sender.GetTask<NFAGenerator_Parser>().ErrorMsg;
-                ComboBox_RegularExpress.Items.Clear();
-                Image_Diagram.Source = null;
+                ComboBox_NFA_RegularExpress.Items.Clear();
+                Image_NFA_Diagram.Source = null;
             }
         }
 
@@ -89,38 +91,60 @@ namespace Compiler_Parser_Demo_WPF
         {
             if(TaskType == typeof(Production_Lexer))
             {
-                TextBox_Info.Text = "Lexer Execute OK!\n";
+                TextBox_Info.Text = "[Production_Lexer]:Execute OK!\n";
             }
             else if(TaskType == typeof(Production_Parser))
             {
-                TextBox_Info.Text += "Parser Execute OK!\n";
+                TextBox_Info.Text += "[Production_Parser]:Execute OK!\n";
                 CodeEditor_Converted.Text = Sender.GetTask<Production_Parser>().ProductionCode;
             }
             else if(TaskType == typeof(NFAGenerator_Lexer))
             {
-                TextBox_Info.Text += "NFAGenerator_Lexer Execute OK!\n";
+                TextBox_Info.Text += "[NFAGenerator_Lexer]:Execute OK!\n";
             }
             else if(TaskType == typeof(NFAGenerator_Parser))
             {
-                ComboBox_RegularExpress.Items.Clear();
-                Image_Diagram.Source = null;
+                ComboBox_NFA_RegularExpress.Items.Clear();
+                Image_NFA_Diagram.Source = null;
                 var nfaparser = Sender.GetTask<NFAGenerator_Parser>();
                 var resultimage = nfaparser.ResultImage;
                 var resultdata = nfaparser.Result;
                 
                 foreach(var item in resultdata.Production_ParserResult.tplist)
                 {
-                    ComboBox_RegularExpress.Items.Add("<" + item.Name + "> -> \"" + item.RegularExpression + "\"");
+                    ComboBox_NFA_RegularExpress.Items.Add("<" + item.Name + "> -> \"" + item.RegularExpression + "\"");
                 }
 
                 NFAImage = resultimage;
 
-                if(ComboBox_RegularExpress.Items.Count > 0)
+                if(ComboBox_NFA_RegularExpress.Items.Count > 0)
                 {
-                    ComboBox_RegularExpress.SelectedIndex = 0;
+                    ComboBox_NFA_RegularExpress.SelectedIndex = 0;
                 }
 
-                TextBox_Info.Text += "NFAGenerator_Parser Execute OK!\n";
+                TextBox_Info.Text += "[NFAGenerator_Parser]:Execute OK!\n";
+            }
+            else if(TaskType == typeof(DFAGenerator))
+            {
+                ComboBox_DFA_RegularExpress.Items.Clear();
+                Image_DFA_Diagram.Source = null;
+                var nfaparser = Sender.GetTask<DFAGenerator>();
+                var resultimage = nfaparser.ResultImage;
+                var resultdata = nfaparser.Result;
+                
+                foreach(var item in resultdata.Production_ParserResult.tplist)
+                {
+                    ComboBox_DFA_RegularExpress.Items.Add("<" + item.Name + "> -> \"" + item.RegularExpression + "\"");
+                }
+
+                DFAImage = resultimage;
+
+                if(ComboBox_DFA_RegularExpress.Items.Count > 0)
+                {
+                    ComboBox_DFA_RegularExpress.SelectedIndex = 0;
+                }
+
+                TextBox_Info.Text += "[DFAGenerator]:Execute OK!\n";
             }
         }
 
@@ -172,14 +196,29 @@ namespace Compiler_Parser_Demo_WPF
             taskFlowManager.RunTask<NFAGenerator_Parser>();
         }
 
-        private void ComboBox_RegularExpress_SelectionChanged(object sender,SelectionChangedEventArgs e)
+        private void ComboBox_NFA_RegularExpress_SelectionChanged(object sender,SelectionChangedEventArgs e)
         {
-            var index = ComboBox_RegularExpress.SelectedIndex;
+            var index = ComboBox_NFA_RegularExpress.SelectedIndex;
 
             if(index >= 0 && index < NFAImage.Length)
             {
-                Image_Diagram.Source = NFAImage[index];
+                Image_NFA_Diagram.Source = NFAImage[index];
             }
+        }
+
+        private void ComboBox_DFA_RegularExpress_SelectionChanged(object sender,SelectionChangedEventArgs e)
+        {
+            var index = ComboBox_DFA_RegularExpress.SelectedIndex;
+
+            if(index >= 0 && index < DFAImage.Length)
+            {
+                Image_DFA_Diagram.Source = DFAImage[index];
+            }
+        }
+
+        private void Button_DFAGenerate_Click(object sender,RoutedEventArgs e)
+        {
+            taskFlowManager.RunTask<DFAGenerator>();
         }
     }
 }
