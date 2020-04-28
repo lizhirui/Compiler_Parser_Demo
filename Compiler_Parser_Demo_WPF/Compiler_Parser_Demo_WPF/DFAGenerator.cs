@@ -174,11 +174,11 @@ namespace Compiler_Parser_Demo_WPF
             var r = new HashSet<char>();
 
             queue.Enqueue(NFAInfo.Item[CurIndex].StartNode);
+            visited.Add(NFAInfo.Item[CurIndex].StartNode);
 
             while(queue.Count > 0)
             {
                 var curnode = queue.Dequeue();
-                visited.Add(curnode);
 
                 foreach(var edge in curnode.Edge)
                 {
@@ -190,6 +190,7 @@ namespace Compiler_Parser_Demo_WPF
                     if(!visited.Contains(edge.NextNode))
                     {
                         queue.Enqueue(edge.NextNode);
+                        visited.Add(edge.NextNode);
                     }
                 }
             }
@@ -244,7 +245,11 @@ namespace Compiler_Parser_Demo_WPF
                         if(!Dstates.Contains(U_name))
                         {
                             Dstates.Add(U_name);
-                            queue.Enqueue(U);
+
+                            if(!Visited.Contains(U_name))
+                            {
+                                queue.Enqueue(U);
+                            }
                         }
 
                         GetDFANode(T).Edge.Add(new DFAEdge{Condition = a,NextNode = GetDFANode(U)});

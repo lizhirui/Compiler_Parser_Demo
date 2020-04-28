@@ -27,7 +27,7 @@
                             <Button x:Name="Button_Convert" Content="->" HorizontalAlignment="Left" Margin="618,10,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.546,0.694" Click="Button_Convert_Click"/>
                             <Button x:Name="Button_NFAGenerate" Content="  NFA生成  " HorizontalAlignment="Left" Margin="1359,40,0,0" VerticalAlignment="Top" Click="Button_NFAGenerate_Click"/>
                             <Button x:Name="Button_DFAGenerate" Content="NFA->DFA" HorizontalAlignment="Left" Margin="1359,70,0,0" VerticalAlignment="Top" Click="Button_DFAGenerate_Click"/>
-                            <Button x:Name="Button_DFAOptimise" Content="  DFA优化  " HorizontalAlignment="Left" Margin="1359,100,0,0" VerticalAlignment="Top"/>
+                            <Button x:Name="Button_DFAOptimise" Content="  DFA优化  " HorizontalAlignment="Left" Margin="1359,100,0,0" VerticalAlignment="Top" Click="Button_DFAOptimise_Click"/>
                             <Label Content="语法分析方法：" HorizontalAlignment="Left" Margin="1339,140,0,0" VerticalAlignment="Top"  Foreground="#ffc8c8c8"/>
                             <ComboBox x:Name="ComboBox_GrammerMajorType" HorizontalAlignment="Left" Margin="1285,170,0,0" VerticalAlignment="Top" Width="230" Background="#ff1e1e1e" Foreground="#ffc8c8c8" />
                             <ComboBox x:Name="ComboBox_GrammarMinorType" HorizontalAlignment="Left" Margin="1285,200,0,0" VerticalAlignment="Top" Width="230" Background="#ff1e1e1e" Foreground="#ffc8c8c8"/>
@@ -54,6 +54,14 @@
                             <ComboBox x:Name="ComboBox_DFA_RegularExpress" HorizontalAlignment="Center" Margin="0,20,0,0" VerticalAlignment="Top" Width="1000" Background="#ff1e1e1e" Foreground="#ffc8c8c8" SelectionChanged="ComboBox_DFA_RegularExpress_SelectionChanged"/>
                             <ScrollViewer CanContentScroll="True" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Margin="0,100,0,0">
                                 <Image x:Name="Image_DFA_Diagram" HorizontalAlignment="Center" Margin="0,0,0,0" VerticalAlignment="Top" Stretch="None" />
+                            </ScrollViewer>
+                        </Grid>
+                    </TabItem>
+                    <TabItem Header="DFA优化图">
+                        <Grid>
+                            <ComboBox x:Name="ComboBox_DFAOptimized_RegularExpress" HorizontalAlignment="Center" Margin="0,20,0,0" VerticalAlignment="Top" Width="1000" Background="#ff1e1e1e" Foreground="#ffc8c8c8" SelectionChanged="ComboBox_DFAOptimized_RegularExpress_SelectionChanged"/>
+                            <ScrollViewer CanContentScroll="True" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Margin="0,100,0,0">
+                                <Image x:Name="Image_DFAOptimized_Diagram" HorizontalAlignment="Center" Margin="0,0,0,0" VerticalAlignment="Top" Stretch="None" />
                             </ScrollViewer>
                         </Grid>
                     </TabItem>

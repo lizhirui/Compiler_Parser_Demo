@@ -30,6 +30,7 @@ namespace Compiler_Parser_Demo_WPF
         private TaskFlowManager taskFlowManager = new TaskFlowManager();
         private BitmapImage[] NFAImage = new BitmapImage[0];
         private BitmapImage[] DFAImage = new BitmapImage[0];
+        private BitmapImage[] DFAOptimizedImage = new BitmapImage[0];
 
         public MainWindow()
         {
@@ -59,6 +60,7 @@ namespace Compiler_Parser_Demo_WPF
             taskFlowManager.AddTask<NFAGenerator_Lexer>();
             taskFlowManager.AddTask<NFAGenerator_Parser>();
             taskFlowManager.AddTask<DFAGenerator>();
+            taskFlowManager.AddTask<DFAOptimizer>();
 
             taskFlowManager.GetTask<DataSource_FromCodeEditor>().BindEditor(CodeEditor);
         }
@@ -128,9 +130,9 @@ namespace Compiler_Parser_Demo_WPF
             {
                 ComboBox_DFA_RegularExpress.Items.Clear();
                 Image_DFA_Diagram.Source = null;
-                var nfaparser = Sender.GetTask<DFAGenerator>();
-                var resultimage = nfaparser.ResultImage;
-                var resultdata = nfaparser.Result;
+                var dfagenerator = Sender.GetTask<DFAGenerator>();
+                var resultimage = dfagenerator.ResultImage;
+                var resultdata = dfagenerator.Result;
                 
                 foreach(var item in resultdata.Production_ParserResult.tplist)
                 {
@@ -145,6 +147,28 @@ namespace Compiler_Parser_Demo_WPF
                 }
 
                 TextBox_Info.Text += "[DFAGenerator]:Execute OK!\n";
+            }
+            else if(TaskType == typeof(DFAOptimizer))
+            {
+                ComboBox_DFAOptimized_RegularExpress.Items.Clear();
+                Image_DFAOptimized_Diagram.Source = null;
+                var dfaoptimizer = Sender.GetTask<DFAOptimizer>();
+                var resultimage = dfaoptimizer.ResultImage;
+                var resultdata = dfaoptimizer.Result;
+                
+                foreach(var item in resultdata.Production_ParserResult.tplist)
+                {
+                    ComboBox_DFAOptimized_RegularExpress.Items.Add("<" + item.Name + "> -> \"" + item.RegularExpression + "\"");
+                }
+
+                DFAOptimizedImage = resultimage;
+
+                if(ComboBox_DFAOptimized_RegularExpress.Items.Count > 0)
+                {
+                    ComboBox_DFAOptimized_RegularExpress.SelectedIndex = 0;
+                }
+
+                TextBox_Info.Text += "[DFAOptimizer]:Execute OK!\n";
             }
         }
 
@@ -216,9 +240,24 @@ namespace Compiler_Parser_Demo_WPF
             }
         }
 
+        private void ComboBox_DFAOptimized_RegularExpress_SelectionChanged(object sender,SelectionChangedEventArgs e)
+        {
+            var index = ComboBox_DFAOptimized_RegularExpress.SelectedIndex;
+
+            if(index >= 0 && index < DFAOptimizedImage.Length)
+            {
+                Image_DFAOptimized_Diagram.Source = DFAOptimizedImage[index];
+            }
+        }
+
         private void Button_DFAGenerate_Click(object sender,RoutedEventArgs e)
         {
             taskFlowManager.RunTask<DFAGenerator>();
+        }
+
+        private void Button_DFAOptimise_Click(object sender,RoutedEventArgs e)
+        {
+            taskFlowManager.RunTask<DFAOptimizer>();
         }
     }
 }
