@@ -96,7 +96,116 @@ namespace Compiler_Parser_Demo_WPF
                         }
                         else
                         {
-                            curlist.Add(new WordInfo{Type = WordType.Char,StartPos = i,Length = 2,AdditionInfo = curexpression[i + 1]});
+                            switch(curexpression[i + 1])
+                            {
+                                case 'B':
+                                    //大写字母
+                                    curlist.Add(new WordInfo{Type = WordType.LeftBrace,StartPos = i,Length = 2,AdditionInfo = '('});
+
+                                    for(var ch = 'A';ch < 'Z';ch++)
+                                    {
+                                        curlist.Add(new WordInfo{Type = WordType.Char,StartPos = i,Length = 2,AdditionInfo = ch});
+                                        curlist.Add(new WordInfo{Type = WordType.Or,StartPos = i,Length = 2,AdditionInfo = '|'});
+                                    }
+
+                                    curlist.Add(new WordInfo{Type = WordType.Char,StartPos = i,Length = 2,AdditionInfo = 'Z'});
+                                    curlist.Add(new WordInfo{Type = WordType.RightBrace,StartPos = i,Length = 2,AdditionInfo = ')'});
+                                    break;
+
+                                case 'b':
+                                    //小写字母
+                                    curlist.Add(new WordInfo{Type = WordType.LeftBrace,StartPos = i,Length = 2,AdditionInfo = '('});
+
+                                    for(var ch = 'a';ch < 'z';ch++)
+                                    {
+                                        curlist.Add(new WordInfo{Type = WordType.Char,StartPos = i,Length = 2,AdditionInfo = ch});
+                                        curlist.Add(new WordInfo{Type = WordType.Or,StartPos = i,Length = 2,AdditionInfo = '|'});
+                                    }
+
+                                    curlist.Add(new WordInfo{Type = WordType.Char,StartPos = i,Length = 2,AdditionInfo = 'z'});
+                                    curlist.Add(new WordInfo{Type = WordType.RightBrace,StartPos = i,Length = 2,AdditionInfo = ')'});
+                                    break;
+
+                                case 'a':
+                                    //字母
+                                    curlist.Add(new WordInfo{Type = WordType.LeftBrace,StartPos = i,Length = 2,AdditionInfo = '('});
+
+                                    for(var ch = 'A';ch <= 'Z';ch++)
+                                    {
+                                        curlist.Add(new WordInfo{Type = WordType.Char,StartPos = i,Length = 2,AdditionInfo = ch});
+                                        curlist.Add(new WordInfo{Type = WordType.Or,StartPos = i,Length = 2,AdditionInfo = '|'});
+                                    }
+                                    
+                                    for(var ch = 'a';ch < 'z';ch++)
+                                    {
+                                        curlist.Add(new WordInfo{Type = WordType.Char,StartPos = i,Length = 2,AdditionInfo = ch});
+                                        curlist.Add(new WordInfo{Type = WordType.Or,StartPos = i,Length = 2,AdditionInfo = '|'});
+                                    }
+
+                                    curlist.Add(new WordInfo{Type = WordType.Char,StartPos = i,Length = 2,AdditionInfo = 'z'});
+                                    curlist.Add(new WordInfo{Type = WordType.RightBrace,StartPos = i,Length = 2,AdditionInfo = ')'});
+                                    break;
+
+                                case '1':
+                                    //数字
+                                    curlist.Add(new WordInfo{Type = WordType.LeftBrace,StartPos = i,Length = 2,AdditionInfo = '('});
+
+                                    for(var ch = '0';ch < '9';ch++)
+                                    {
+                                        curlist.Add(new WordInfo{Type = WordType.Char,StartPos = i,Length = 2,AdditionInfo = ch});
+                                        curlist.Add(new WordInfo{Type = WordType.Or,StartPos = i,Length = 2,AdditionInfo = '|'});
+                                    }
+
+                                    curlist.Add(new WordInfo{Type = WordType.Char,StartPos = i,Length = 2,AdditionInfo = '9'});
+                                    curlist.Add(new WordInfo{Type = WordType.RightBrace,StartPos = i,Length = 2,AdditionInfo = ')'});
+                                    break;
+
+                                case 'i':
+                                    //字母/数字
+                                    curlist.Add(new WordInfo{Type = WordType.LeftBrace,StartPos = i,Length = 2,AdditionInfo = '('});
+
+                                    for(var ch = 'A';ch <= 'Z';ch++)
+                                    {
+                                        curlist.Add(new WordInfo{Type = WordType.Char,StartPos = i,Length = 2,AdditionInfo = ch});
+                                        curlist.Add(new WordInfo{Type = WordType.Or,StartPos = i,Length = 2,AdditionInfo = '|'});
+                                    }
+                                    
+                                    for(var ch = 'a';ch <= 'z';ch++)
+                                    {
+                                        curlist.Add(new WordInfo{Type = WordType.Char,StartPos = i,Length = 2,AdditionInfo = ch});
+                                        curlist.Add(new WordInfo{Type = WordType.Or,StartPos = i,Length = 2,AdditionInfo = '|'});
+                                    }
+
+                                    for(var ch = '0';ch < '9';ch++)
+                                    {
+                                        curlist.Add(new WordInfo{Type = WordType.Char,StartPos = i,Length = 2,AdditionInfo = ch});
+                                        curlist.Add(new WordInfo{Type = WordType.Or,StartPos = i,Length = 2,AdditionInfo = '|'});
+                                    }
+
+                                    curlist.Add(new WordInfo{Type = WordType.Char,StartPos = i,Length = 2,AdditionInfo = '9'});
+                                    curlist.Add(new WordInfo{Type = WordType.RightBrace,StartPos = i,Length = 2,AdditionInfo = ')'});
+                                    break;
+
+                                case 'n':
+                                    //换行符
+                                    curlist.Add(new WordInfo{Type = WordType.Char,StartPos = i,Length = 2,AdditionInfo = '\n'});
+                                    break;
+
+                                case 'r':
+                                    //回车符
+                                    curlist.Add(new WordInfo{Type = WordType.Char,StartPos = i,Length = 2,AdditionInfo = '\r'});
+                                    break;
+
+                                case 't':
+                                    //制表符
+                                    curlist.Add(new WordInfo{Type = WordType.Char,StartPos = i,Length = 2,AdditionInfo = '\t'});
+                                    break;
+
+                                default:
+                                    curlist.Add(new WordInfo{Type = WordType.Char,StartPos = i,Length = 2,AdditionInfo = curexpression[i + 1]});
+                                    break;
+                            }
+
                             i += 2;
                         }
 
@@ -133,7 +242,7 @@ namespace Compiler_Parser_Demo_WPF
             catch(Exception ex)
             {
                 Result = new ResultInfo{ParserResult = new Production_Parser.ResultInfo{ntplist = null,tplist = null},WordList = null};
-                ErrorMsg = "[NFAGenerator_Lexer]" + ex.Message + "\n" + ex.StackTrace;
+                ErrorMsg = "[NFAGenerator_Lexer]:" + ex.Message + "\n" + ex.StackTrace;
                 return false;
             }
 
@@ -157,6 +266,11 @@ namespace Compiler_Parser_Demo_WPF
         public bool ResultChanged()
         {
             return Changed;
+        }
+
+        public void SetChanged()
+        {
+            Changed = true;
         }
     }
 }

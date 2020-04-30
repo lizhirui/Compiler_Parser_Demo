@@ -344,7 +344,7 @@ namespace Compiler_Parser_Demo_WPF
             {
                 NonTerminalProductionResult = null;
                 TerminalProductionResult = null;
-                ErrorMsg = "[Production_Parser]" + ex.Message + "\n" + ex.StackTrace;
+                ErrorMsg = "[Production_Parser]:" + ex.Message + "\n" + ex.StackTrace;
                 ProductionCode = "";
                 return false;
             }
@@ -371,6 +371,11 @@ namespace Compiler_Parser_Demo_WPF
         public bool ResultChanged()
         {
             return Changed;
+        }
+
+        public void SetChanged()
+        {
+            Changed = true;
         }
     }
 }

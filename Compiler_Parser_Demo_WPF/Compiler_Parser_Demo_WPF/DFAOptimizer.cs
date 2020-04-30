@@ -29,6 +29,8 @@ namespace Compiler_Parser_Demo_WPF
         private ResultInfo DFAInfo;
         private ResultItem CurDFA;
 
+        private bool ImageOutputEnable = true;
+
         public DFAOptimizer()
         {
             
@@ -155,6 +157,16 @@ namespace Compiler_Parser_Demo_WPF
             }
         }
 
+        public void SetImageOutputEnable(bool ImageOutputEnable)
+        {
+            this.ImageOutputEnable = ImageOutputEnable;
+        }
+
+        public bool GetImageOutputEnable()
+        {
+            return ImageOutputEnable;
+        }
+
         private void AnalysisDFA()
         {
             DFASplitSet = new List<List<DFANode>>();
@@ -273,7 +285,7 @@ namespace Compiler_Parser_Demo_WPF
 
             foreach(var item in DFAInfo.Item)
             {
-                rimage.Add(DFAGenerator_DiagramGenerator.ToImage(item));
+                rimage.Add(!ImageOutputEnable ? new BitmapImage() : DFAGenerator_DiagramGenerator.ToImage(item));
             }
 
             ResultImage = rimage.ToArray();
@@ -288,12 +300,18 @@ namespace Compiler_Parser_Demo_WPF
 
         public object MoveTo()
         {
+            Changed = false;
             return Result;
         }
 
         public bool ResultChanged()
         {
             return Changed;
+        }
+
+        public void SetChanged()
+        {
+            Changed = true;
         }
     }
 }

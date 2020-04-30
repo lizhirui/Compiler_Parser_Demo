@@ -305,7 +305,7 @@ namespace Compiler_Parser_Demo_WPF
             catch(Exception ex)
             {
                 Result = null;
-                ErrorMsg = "[Production_Lexer]" + ex.Message + "\n" + ex.StackTrace;
+                ErrorMsg = "[Production_Lexer]:" + ex.Message + "\n" + ex.StackTrace;
                 return false;
             }
 
@@ -329,6 +329,11 @@ namespace Compiler_Parser_Demo_WPF
         public bool ResultChanged()
         {
             return Changed;
+        }
+
+        public void SetChanged()
+        {
+            Changed = true;
         }
     }
 }

@@ -86,6 +86,11 @@ namespace Compiler_Parser_Demo_WPF
 
                 if(!TaskInstance[i].MoveFrom(lastresult))
                 {
+                    if(i > 0)
+                    {
+                        TaskInstance[i - 1].SetChanged();
+                    }
+
                     succ = false;
                     break;
                 }

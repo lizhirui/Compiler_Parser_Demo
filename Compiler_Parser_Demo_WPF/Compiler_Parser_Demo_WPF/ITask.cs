@@ -24,5 +24,10 @@ namespace Compiler_Parser_Demo_WPF
         /// </summary>
         /// <returns></returns>
         bool ResultChanged();
+
+        /// <summary>
+        /// Set changed flag is true
+        /// </summary>
+        void SetChanged();
     }
 }

@@ -61,6 +61,8 @@ namespace Compiler_Parser_Demo_WPF
         private int CurIndex = 0;
         private NFAGenerator_Lexer.ResultInfo NFAWordInfo;
 
+        private bool ImageOutputEnable = true;
+
         public NFAGenerator_Parser()
         {
             ErrorMsg = "";
@@ -274,6 +276,16 @@ namespace Compiler_Parser_Demo_WPF
             return new ResultItem{StartNode = startnode,EndNode = curnode};
         }
 
+        public void SetImageOutputEnable(bool ImageOutputEnable)
+        {
+            this.ImageOutputEnable = ImageOutputEnable;
+        }
+
+        public bool GetImageOutputEnable()
+        {
+            return ImageOutputEnable;
+        }
+
         /// <summary>
         /// Analysis Regular Expression
         /// Production:
@@ -318,7 +330,7 @@ namespace Compiler_Parser_Demo_WPF
             {
                 Result = new ResultInfo();
                 ResultImage = null;
-                ErrorMsg = "[NFAGenerator_Parser]" + ex.Message + "\n" + ex.StackTrace;
+                ErrorMsg = "[NFAGenerator_Parser]:" + ex.Message + "\n" + ex.StackTrace;
                 return false;
             }
             
@@ -328,7 +340,7 @@ namespace Compiler_Parser_Demo_WPF
 
             foreach(var item in rlist)
             {
-                rimage.Add(NFAGenerator_DiagramGenerator.ToImage(item));
+                rimage.Add(!ImageOutputEnable ? new BitmapImage() : NFAGenerator_DiagramGenerator.ToImage(item));
             }
 
             ResultImage = rimage.ToArray();
@@ -350,6 +362,11 @@ namespace Compiler_Parser_Demo_WPF
         public bool ResultChanged()
         {
             return Changed;
+        }
+
+        public void SetChanged()
+        {
+            Changed = true;
         }
     }
 }

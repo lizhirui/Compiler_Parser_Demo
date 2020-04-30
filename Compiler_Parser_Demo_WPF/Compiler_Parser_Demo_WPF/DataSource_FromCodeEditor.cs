@@ -36,5 +36,10 @@ namespace Compiler_Parser_Demo_WPF
         {
             return TextChanged;
         }
+
+        public void SetChanged()
+        {
+            TextChanged = true;
+        }
     }
 }

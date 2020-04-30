@@ -54,6 +54,8 @@ namespace Compiler_Parser_Demo_WPF
         private int NewDFANodeID = 0;
         private bool Changed = false;
 
+        private bool ImageOutputEnable = true;
+
         public DFAGenerator()
         {
         
@@ -226,15 +228,27 @@ namespace Compiler_Parser_Demo_WPF
 
             queue.Enqueue(startset);
             Dstates.Add(NFANodeSetToString(startset));
+            Visited.Add(NFANodeSetToString(startset));
+            int cnt = 0;
 
             while(queue.Count > 0)
             {
                 var T = queue.Dequeue();
                 var Tname = NFANodeSetToString(T);
+                var charset = new HashSet<char>();
 
-                Visited.Add(Tname);
+                foreach(var node in T)
+                {
+                    foreach(var edge in node.Edge)
+                    {
+                        if(!edge.Epsilon)
+                        {
+                            charset.Add(edge.Condition);
+                        }
+                    }
+                }
 
-                foreach(var a in r.CharSet)
+                foreach(var a in charset)
                 {
                     var U = GetEpsilonClosure(Move(T,a));
 
@@ -249,15 +263,28 @@ namespace Compiler_Parser_Demo_WPF
                             if(!Visited.Contains(U_name))
                             {
                                 queue.Enqueue(U);
+                                Visited.Add(U_name);
                             }
                         }
 
                         GetDFANode(T).Edge.Add(new DFAEdge{Condition = a,NextNode = GetDFANode(U)});
                     }
                 }
+
+                cnt++;
             }
 
             rlist.Add(r);
+        }
+
+        public void SetImageOutputEnable(bool ImageOutputEnable)
+        {
+            this.ImageOutputEnable = ImageOutputEnable;
+        }
+
+        public bool GetImageOutputEnable()
+        {
+            return ImageOutputEnable;
         }
 
         public void Analysis(NFAGenerator_Parser.ResultInfo NFAInfo)
@@ -280,7 +307,7 @@ namespace Compiler_Parser_Demo_WPF
 
             foreach(var item in rlist)
             {
-                rimage.Add(DFAGenerator_DiagramGenerator.ToImage(item));
+                rimage.Add(!ImageOutputEnable ? new BitmapImage() : DFAGenerator_DiagramGenerator.ToImage(item));
             }
 
             ResultImage = rimage.ToArray();
@@ -295,12 +322,18 @@ namespace Compiler_Parser_Demo_WPF
 
         public object MoveTo()
         {
+            Changed = false;
             return Result;
         }
 
         public bool ResultChanged()
         {
             return Changed;
+        }
+
+        public void SetChanged()
+        {
+            Changed = true;
         }
     }
 }

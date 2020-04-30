@@ -26,17 +26,21 @@
                             <Label Content="转换后产生式：" HorizontalAlignment="Left" Margin="662,6,0,0" VerticalAlignment="Top" Foreground="#ffc8c8c8"/>
                             <Button x:Name="Button_Convert" Content="->" HorizontalAlignment="Left" Margin="618,10,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.546,0.694" Click="Button_Convert_Click"/>
                             <Button x:Name="Button_NFAGenerate" Content="  NFA生成  " HorizontalAlignment="Left" Margin="1359,40,0,0" VerticalAlignment="Top" Click="Button_NFAGenerate_Click"/>
+                            <CheckBox x:Name="CheckBox_NFAGeneratorImageEnable" Content = "输出图" HorizontalAlignment="Left" Margin="1440,44,0,0" VerticalAlignment="Top" Foreground="#ffc8c8c8" Click="CheckBox_NFAGeneratorImageEnable_Click"/>
                             <Button x:Name="Button_DFAGenerate" Content="NFA->DFA" HorizontalAlignment="Left" Margin="1359,70,0,0" VerticalAlignment="Top" Click="Button_DFAGenerate_Click"/>
+                            <CheckBox x:Name="CheckBox_DFAGeneratorImageEnable" Content = "输出图" HorizontalAlignment="Left" Margin="1440,74,0,0" VerticalAlignment="Top" Foreground="#ffc8c8c8" Click="CheckBox_DFAGeneratorImageEnable_Click"/>
                             <Button x:Name="Button_DFAOptimise" Content="  DFA优化  " HorizontalAlignment="Left" Margin="1359,100,0,0" VerticalAlignment="Top" Click="Button_DFAOptimise_Click"/>
-                            <Label Content="语法分析方法：" HorizontalAlignment="Left" Margin="1339,140,0,0" VerticalAlignment="Top"  Foreground="#ffc8c8c8"/>
-                            <ComboBox x:Name="ComboBox_GrammerMajorType" HorizontalAlignment="Left" Margin="1285,170,0,0" VerticalAlignment="Top" Width="230" Background="#ff1e1e1e" Foreground="#ffc8c8c8" />
-                            <ComboBox x:Name="ComboBox_GrammarMinorType" HorizontalAlignment="Left" Margin="1285,200,0,0" VerticalAlignment="Top" Width="230" Background="#ff1e1e1e" Foreground="#ffc8c8c8"/>
-                            <Button x:Name="Button_GrammarCompile" Content="文法编译" HorizontalAlignment="Left" Margin="1321,230,0,0" VerticalAlignment="Top"/>
+                                <CheckBox x:Name="CheckBox_DFAOptimizerImageEnable" Content = "输出图" HorizontalAlignment="Left" Margin="1440,104,0,0" VerticalAlignment="Top" Foreground="#ffc8c8c8" Click="CheckBox_DFAOptimizerImageEnable_Click"/>
+                            <Button x:Name="Button_DFAPriorityGenerate" Content="DFA优先级生成" HorizontalAlignment="Left" Margin="1348,130,0,0" VerticalAlignment="Top" Click="Button_DFAPriorityGenerate_Click"/>
+                            <Label Content="语法分析方法：" HorizontalAlignment="Left" Margin="1347,152,0,0" VerticalAlignment="Top"  Foreground="#ffc8c8c8"/>
+                            <ComboBox x:Name="ComboBox_GrammerMajorType" HorizontalAlignment="Left" Margin="1285,180,0,0" VerticalAlignment="Top" Width="230" Background="#ff1e1e1e" Foreground="#ffc8c8c8" />
+                            <ComboBox x:Name="ComboBox_GrammarMinorType" HorizontalAlignment="Left" Margin="1285,210,0,0" VerticalAlignment="Top" Width="230" Background="#ff1e1e1e" Foreground="#ffc8c8c8"/>
+                            <Button x:Name="Button_GrammarCompile" Content="文法编译" HorizontalAlignment="Left" Margin="1321,240,0,0" VerticalAlignment="Top"/>
                             <avalonedit:TextEditor x:Name="CodeEditor_GrammarTest" HorizontalAlignment="Left" Margin="1285,270,0,0" VerticalAlignment="Top" 
-                            Height="504" Width="230" SyntaxHighlighting="C#" FontFamily="Consolas" FontSize="10pt" Background="#ff1e1e1e" 
+                            Height="504" Width="230" FontFamily="Consolas" FontSize="10pt" Background="#ff1e1e1e" 
                             Foreground="#ffc8c8c8" ScrollViewer.HorizontalScrollBarVisibility="Hidden" ScrollViewer.VerticalScrollBarVisibility="Hidden"
                             ShowLineNumbers="True" WordWrap="True" BorderBrush="#ffc8c8c8" BorderThickness="1"/>
-                            <Button x:Name="Button_GrammarTest" Content="文法测试" HorizontalAlignment="Left" Margin="1412,230,0,0" VerticalAlignment="Top"/>
+                            <Button x:Name="Button_GrammarTest" Content="文法测试" HorizontalAlignment="Left" Margin="1412,240,0,0" VerticalAlignment="Top"/>
                             <TextBox x:Name="TextBox_Info" HorizontalAlignment="Left" Margin="10,600,0,0" Text="" TextWrapping="Wrap" VerticalAlignment="Top" 
                             AcceptsReturn="True" VerticalScrollBarVisibility="Auto" Width="1261" Height="174" IsReadOnly="True" Background="#ff1e1e1e" Foreground="#ffc8c8c8"/>
                         </Grid>
@@ -63,6 +67,51 @@
                             <ScrollViewer CanContentScroll="True" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Margin="0,100,0,0">
                                 <Image x:Name="Image_DFAOptimized_Diagram" HorizontalAlignment="Center" Margin="0,0,0,0" VerticalAlignment="Top" Stretch="None" />
                             </ScrollViewer>
+                        </Grid>
+                    </TabItem>
+                    <TabItem Header="DFA优先级表">
+                        <Grid HorizontalAlignment="Left" VerticalAlignment="Top">
+                            <DataGrid Name="DataGrid_DFAPriorityTable" Grid.Row="1" IsReadOnly="True" AlternationCount="2" AutoGenerateColumns="false" Width="1500">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="DFA名称"
+                                                    Width="400"
+                                                    Binding="{Binding Name}" />
+                                    <DataGridTextColumn Header="DFA正则式"
+                                                    Width="*"
+                                                    Binding="{Binding RegularExpression}" />
+                                    <DataGridTextColumn Header="是否可以生成无限语言"
+                                                    Width="200"
+                                                    Binding="{Binding IsLoop}" />
+                                    <DataGridTextColumn Header="优先级"
+                                                    Width="200"
+                                                    Binding="{Binding Priority}" />
+                                </DataGrid.Columns>
+                            </DataGrid>
+                        </Grid>
+                    </TabItem>
+                    <TabItem Header="词法分析测试">
+                        <Grid HorizontalAlignment="Left" VerticalAlignment="Top">
+                            <avalonedit:TextEditor x:Name="CodeEditor_LexerTest" HorizontalAlignment="Left" Margin="0,0,0,0" VerticalAlignment="Top" 
+                            Height="700" Width="500" FontFamily="Consolas" FontSize="10pt" Background="#ff1e1e1e" 
+                            Foreground="#ffc8c8c8" ScrollViewer.HorizontalScrollBarVisibility="Hidden" ScrollViewer.VerticalScrollBarVisibility="Hidden"
+                            ShowLineNumbers="True" WordWrap="True" BorderBrush="#ffc8c8c8" BorderThickness="1"/>
+                            <DataGrid Name="DataGrid_LexerTestResult" Grid.Row="1" IsReadOnly="True" AlternationCount="2" AutoGenerateColumns="false" Width="700" Margin="600,0,0,0" HorizontalAlignment="Left">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="匹配字符/字符串"
+                                                    Width="200"
+                                                    Binding="{Binding String}" />
+                                    <DataGridTextColumn Header="DFA名称"
+                                                    Width="200"
+                                                    Binding="{Binding Name}" />
+                                    <DataGridTextColumn Header="DFA正则式"
+                                                    Width="*"
+                                                    Binding="{Binding RegularExpression}" />
+                                    <DataGridTextColumn Header="优先级"
+                                                    Width="50"
+                                                    Binding="{Binding Priority}" />
+                                </DataGrid.Columns>
+                            </DataGrid>
+                            <Button x:Name="Button_LexerTest" Content="词法分析测试" HorizontalAlignment="Left" Margin="1350,0,0,0" VerticalAlignment="Top" Click="Button_LexerTest_Click"/>
                         </Grid>
                     </TabItem>
                 </TabControl>
