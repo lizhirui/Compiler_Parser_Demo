@@ -11,7 +11,7 @@ namespace Compiler_Parser_Demo_WPF
         /// </summary>
         /// <param name="obj"></param>
         /// <returns>true if success</returns>
-       bool MoveFrom(object obj);
+        bool MoveFrom(object obj);
 
         /// <summary>
         /// Send the result to the next task

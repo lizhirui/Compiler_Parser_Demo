@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Text;
+using System.Windows.Data;
+using System.Windows.Forms;
 
 namespace Compiler_Parser_Demo_WPF
 {
@@ -27,6 +30,20 @@ namespace Compiler_Parser_Demo_WPF
             TaskTypeMap[TaskType] = TaskTypeList.Count;
             TaskTypeList.Add(TaskType);
             TaskInstance.Add(Activator.CreateInstance(TaskType,true) as ITask);
+        }
+
+        public void AddTask<T>(params object[] args) where T : class,ITask
+        {
+            var TaskType = typeof(T);
+
+            if(TaskTypeMap.ContainsKey(typeof(T)))
+            {
+                throw new ArgumentException("Task already exists in TaskTypeList");
+            }
+
+            TaskTypeMap[TaskType] = TaskTypeList.Count;
+            TaskTypeList.Add(TaskType);
+            TaskInstance.Add(Activator.CreateInstance(TaskType,BindingFlags.Public | BindingFlags.Instance,null,args,null) as ITask);
         }
 
         public void ClearTask()

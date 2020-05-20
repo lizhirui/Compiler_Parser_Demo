@@ -80,7 +80,7 @@ namespace Compiler_Parser_Demo_WPF
         private HashSet<string> WaitCheckReference;
         private List<KeyValuePair<string,int>> WaitCheckReferenceList;
         private Dictionary<string,string> TerminalNameMap;
-        private const string SysNamePrefix = "__ParserSystem_";
+        public const string SysNamePrefix = "__ParserSystem_";
         private int CurSysNameID = 0;
 
         public Production_Parser()
@@ -331,6 +331,12 @@ namespace Compiler_Parser_Demo_WPF
                 foreach(var item in TerminalNameMap)
                 {
                     tplist.Add(new TerminalProductionInfo{Name = item.Value,RegularExpression = item.Key});
+                }
+
+                if(tplist.Count == 0 && ntplist.Count > 0)
+                {
+                    ErrorMsg = "[Production_Parser]:存在非终结符却不存在终结符！\n";
+                    throw new ParserAnalysisException();
                 }
             }
             catch(ParserAnalysisException ex)

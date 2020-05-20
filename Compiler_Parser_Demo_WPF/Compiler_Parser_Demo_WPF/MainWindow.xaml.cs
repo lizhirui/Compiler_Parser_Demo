@@ -216,12 +216,20 @@ namespace Compiler_Parser_Demo_WPF
             taskFlowManager.AddTask<DFAGenerator>();
             taskFlowManager.AddTask<DFAOptimizer>();
             taskFlowManager.AddTask<DFAPriorityGenerator>();
+            taskFlowManager.AddTask<DataSource_FromGrammarComboBoxs>();
+            taskFlowManager.AddTask<GrammarCompiler>();
 
             taskFlowManager.GetTask<DataSource_FromCodeEditor>().BindEditor(CodeEditor);
 
             CheckBox_NFAGeneratorImageEnable.IsChecked = taskFlowManager.GetTask<NFAGenerator_Parser>().GetImageOutputEnable();
             CheckBox_DFAGeneratorImageEnable.IsChecked = taskFlowManager.GetTask<DFAGenerator>().GetImageOutputEnable();
             CheckBox_DFAOptimizerImageEnable.IsChecked = taskFlowManager.GetTask<DFAOptimizer>().GetImageOutputEnable();
+
+            var grammar_compiler_list = new GrammarCompilerCollection();
+            
+            grammar_compiler_list.Add(new GrammarCompiler_LL_1());
+
+            taskFlowManager.GetTask<DataSource_FromGrammarComboBoxs>().Init(grammar_compiler_list,ComboBox_GrammarMajorType,ComboBox_GrammarMinorType);
         }
 
         private void TaskFlowManager_TaskResultCleared(TaskFlowManager Sender,Type TaskType)
@@ -250,6 +258,10 @@ namespace Compiler_Parser_Demo_WPF
             {
                 TextBox_Info.Text += Sender.GetTask<DFAPriorityGenerator>().ErrorMsg;
                 DataGrid_DFAPriorityTableData.Clear();
+            }
+            else if(TaskType == typeof(GrammarCompiler))
+            {
+                TextBox_Info.Text += Sender.GetTask<GrammarCompiler>().ErrorText;
             }
         }
 
@@ -351,6 +363,10 @@ namespace Compiler_Parser_Demo_WPF
                     var tinfo = dfaprioritygenerator.Result.Production_ParserResult.tplist[dfa.TerminalID];
                     DataGrid_DFAPriorityTableData.Add(new DataGrid_DFAPriorityTable_Item{Name = tinfo.Name,RegularExpression = tinfo.RegularExpression,IsLoop = "是",Priority = "低"});
                 }
+            }
+            else if(TaskType == typeof(GrammarCompiler))
+            {
+                TextBox_Info.Text += Sender.GetTask<GrammarCompiler>().ErrorText;
             }
         }
 
@@ -467,121 +483,6 @@ namespace Compiler_Parser_Demo_WPF
             MessageBox.Show(ErrorText,"词法分析错误",MessageBoxButton.OK,MessageBoxImage.Error);
         }
 
-        struct LexerWordInfo
-        {
-            public string String;
-            public DFAItem DFA;
-            public bool IsHighPriorityDFA;
-        }
-
-        private bool MatchDFA(string Code,int StartIndex,DFANode StartNode,out int Length)
-        {
-            var succlength = 0;
-            var curnode = StartNode;
-            var curlength = 0;
-
-            while(true)
-            {
-                if(curnode.IsEndNode)
-                {
-                    succlength = curlength;
-                }
-
-                if((StartIndex + curlength) >= Code.Length)
-                {
-                    break;
-                }
-
-                var matchedge = new DFAEdge();
-
-                foreach(var edge in curnode.Edge)
-                {
-                    if(edge.Condition == Code[StartIndex + curlength])
-                    {
-                        matchedge = edge;
-                        break;
-                    }
-                }
-
-                if(matchedge.NextNode == null)
-                {
-                    Length = succlength;
-                    break;
-                }
-
-                curnode = matchedge.NextNode;
-                curlength++;
-            }
-            
-            Length = succlength;
-            return succlength == 0 ? false : true;
-        }
-
-        private bool LexerAnalysis(string Code,out List<LexerWordInfo> WordInfo,out string ErrorText)
-        {
-            if(Code == "")
-            {
-                WordInfo = new List<LexerWordInfo>();
-                ErrorText = "";
-                return true;
-            }
-
-            WordInfo = new List<LexerWordInfo>();
-            var dfapg = taskFlowManager.GetTask<DFAPriorityGenerator>();
-            var nolooplist = dfapg.Result.Item.NoLoopDFAList;
-            var looplist = dfapg.Result.Item.LoopDFAList;
-            var tplist = dfapg.Result.Production_ParserResult.tplist;
-
-            var curindex = 0;
-
-            while(curindex < Code.Length)
-            {
-                var length = 0;
-                var dfaitem = new DFAItem();
-                var ishigh = true;
-                var matched = false;
-
-                foreach(var dfa in nolooplist)
-                {
-                    if(MatchDFA(Code,curindex,dfa.StartNode,out length))
-                    {
-                        matched = true;
-                        ishigh = true;
-                        dfaitem = dfa;
-                        break;
-                    }
-                }
-
-                if(!matched)
-                {
-                    foreach(var dfa in looplist)
-                    {
-                        if(MatchDFA(Code,curindex,dfa.StartNode,out length))
-                        {
-                            matched = true;
-                            ishigh = false;
-                            dfaitem = dfa;
-                            break;
-                        }
-                    }
-                }
-
-                if(!matched)
-                {
-                    ErrorText = "在字符" + curindex + "\"" + Code[curindex] + "\"处分析失败：无匹配DFA！";
-                    return false;
-                }
-                else
-                {
-                    WordInfo.Add(new LexerWordInfo{String = Code.Substring(curindex,length),IsHighPriorityDFA = ishigh,DFA = dfaitem});
-                    curindex += length;
-                }
-            }
-
-            ErrorText = "";
-            return true;
-        }
-
         private void Button_LexerTest_Click(object sender,RoutedEventArgs e)
         {
             var dfapg = taskFlowManager.GetTask<DFAPriorityGenerator>();
@@ -596,7 +497,7 @@ namespace Compiler_Parser_Demo_WPF
             List<LexerWordInfo> result;
             var errorstr = "";
 
-            if(!LexerAnalysis(CodeEditor_LexerTest.Text,out result,out errorstr))
+            if(!new LexerAnalyzer(taskFlowManager).LexerAnalysis(CodeEditor_LexerTest.Text,out result,out errorstr))
             {
                 LexerTest_Error(errorstr);
             }
@@ -607,6 +508,28 @@ namespace Compiler_Parser_Demo_WPF
             {
                 DataGrid_LexerTestResultData.Add(new DataGrid_LexerTestResult_Item{String = item.String,Name = tplist[item.DFA.TerminalID].Name,RegularExpression = tplist[item.DFA.TerminalID].RegularExpression,Priority = item.IsHighPriorityDFA ? "高" : "低"});
             }
+        }
+
+        private void Button_GrammarCompile_Click(object sender,RoutedEventArgs e)
+        {
+            taskFlowManager.RunTask<GrammarCompiler>();
+        }
+
+        private void Button_GrammarTest_Click(object sender,RoutedEventArgs e)
+        {
+            var grammarcompiler = taskFlowManager.GetTask<GrammarCompiler>();
+
+            List<LexerWordInfo> result;
+            var errorstr = "";
+
+            if(!new LexerAnalyzer(taskFlowManager).LexerAnalysis(CodeEditor_GrammarTest.Text,out result,out errorstr))
+            {
+                LexerTest_Error(errorstr);
+                return;
+            }
+
+            grammarcompiler.GrammarPreInfo.GrammarCompiler.Test(result,out errorstr);
+            MessageBox.Show(errorstr,"语法分析结果",MessageBoxButton.OK);
         }
     }
 }

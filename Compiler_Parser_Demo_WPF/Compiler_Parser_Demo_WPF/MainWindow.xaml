@@ -33,14 +33,14 @@
                                 <CheckBox x:Name="CheckBox_DFAOptimizerImageEnable" Content = "输出图" HorizontalAlignment="Left" Margin="1440,104,0,0" VerticalAlignment="Top" Foreground="#ffc8c8c8" Click="CheckBox_DFAOptimizerImageEnable_Click"/>
                             <Button x:Name="Button_DFAPriorityGenerate" Content="DFA优先级生成" HorizontalAlignment="Left" Margin="1348,130,0,0" VerticalAlignment="Top" Click="Button_DFAPriorityGenerate_Click"/>
                             <Label Content="语法分析方法：" HorizontalAlignment="Left" Margin="1347,152,0,0" VerticalAlignment="Top"  Foreground="#ffc8c8c8"/>
-                            <ComboBox x:Name="ComboBox_GrammerMajorType" HorizontalAlignment="Left" Margin="1285,180,0,0" VerticalAlignment="Top" Width="230" Background="#ff1e1e1e" Foreground="#ffc8c8c8" />
+                            <ComboBox x:Name="ComboBox_GrammarMajorType" HorizontalAlignment="Left" Margin="1285,180,0,0" VerticalAlignment="Top" Width="230" Background="#ff1e1e1e" Foreground="#ffc8c8c8" />
                             <ComboBox x:Name="ComboBox_GrammarMinorType" HorizontalAlignment="Left" Margin="1285,210,0,0" VerticalAlignment="Top" Width="230" Background="#ff1e1e1e" Foreground="#ffc8c8c8"/>
-                            <Button x:Name="Button_GrammarCompile" Content="文法编译" HorizontalAlignment="Left" Margin="1321,240,0,0" VerticalAlignment="Top"/>
+                            <Button x:Name="Button_GrammarCompile" Content="文法编译" HorizontalAlignment="Left" Margin="1321,240,0,0" VerticalAlignment="Top" Click="Button_GrammarCompile_Click"/>
                             <avalonedit:TextEditor x:Name="CodeEditor_GrammarTest" HorizontalAlignment="Left" Margin="1285,270,0,0" VerticalAlignment="Top" 
                             Height="504" Width="230" FontFamily="Consolas" FontSize="10pt" Background="#ff1e1e1e" 
                             Foreground="#ffc8c8c8" ScrollViewer.HorizontalScrollBarVisibility="Hidden" ScrollViewer.VerticalScrollBarVisibility="Hidden"
                             ShowLineNumbers="True" WordWrap="True" BorderBrush="#ffc8c8c8" BorderThickness="1"/>
-                            <Button x:Name="Button_GrammarTest" Content="文法测试" HorizontalAlignment="Left" Margin="1412,240,0,0" VerticalAlignment="Top"/>
+                            <Button x:Name="Button_GrammarTest" Content="文法测试" HorizontalAlignment="Left" Margin="1412,240,0,0" VerticalAlignment="Top" Click="Button_GrammarTest_Click"/>
                             <TextBox x:Name="TextBox_Info" HorizontalAlignment="Left" Margin="10,600,0,0" Text="" TextWrapping="Wrap" VerticalAlignment="Top" 
                             AcceptsReturn="True" VerticalScrollBarVisibility="Auto" Width="1261" Height="174" IsReadOnly="True" Background="#ff1e1e1e" Foreground="#ffc8c8c8"/>
                         </Grid>
