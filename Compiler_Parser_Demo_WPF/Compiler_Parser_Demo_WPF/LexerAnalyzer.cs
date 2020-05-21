@@ -123,7 +123,11 @@ namespace Compiler_Parser_Demo_WPF
                 }
                 else
                 {
-                    WordInfo.Add(new LexerWordInfo{String = Code.Substring(curindex,length),IsHighPriorityDFA = ishigh,DFA = dfaitem});
+                    if(tplist[dfaitem.TerminalID].Name != "BlankChar")//过滤空字符
+                    {
+                        WordInfo.Add(new LexerWordInfo{String = Code.Substring(curindex,length),IsHighPriorityDFA = ishigh,DFA = dfaitem});
+                    }
+
                     curindex += length;
                 }
             }
