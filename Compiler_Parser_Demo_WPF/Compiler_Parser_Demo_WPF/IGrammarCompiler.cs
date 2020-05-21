@@ -33,5 +33,17 @@ namespace Compiler_Parser_Demo_WPF
         /// <param name="ErrorText"></param>
         /// <returns></returns>
         bool Test(List<LexerWordInfo> WordList,out string ErrorText);
+
+        /// <summary>
+        /// 获取编译结果
+        /// </summary>
+        /// <returns></returns>
+        string GetCompileResult();
+
+        /// <summary>
+        /// 获取测试结果
+        /// </summary>
+        /// <returns></returns>
+        string GetTestResult();
     }
 }

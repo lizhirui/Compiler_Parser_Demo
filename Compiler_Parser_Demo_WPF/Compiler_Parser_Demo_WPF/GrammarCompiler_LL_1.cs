@@ -37,6 +37,8 @@ namespace Compiler_Parser_Demo_WPF
         private ProductionItem[,] PredictAnalysisTable = null;
         private Dictionary<string,int> TPMap = new Dictionary<string,int>();
         private Dictionary<string,int> NTPMap = new Dictionary<string,int>();
+        private string CompileResult = "";
+        private string TestResult = "";
 
         public string GetMajorType()
         {
@@ -788,6 +790,7 @@ namespace Compiler_Parser_Demo_WPF
             var tplist = ProductionInfo.Production_ParserResult.tplist;
 
             var id = 0;
+            CompileResult = "";
 
             foreach(var item in ProductionInfo.Production_ParserResult.tplist)
             {
@@ -862,6 +865,45 @@ namespace Compiler_Parser_Demo_WPF
                 }
             }
 
+            //生成结果HTML代码
+            var stb = new StringBuilder();
+            stb.Append("<!DOCTYPE html><html><head><meta http-equiv=\"Content-Type\" content=\"text/html;charset=utf-8\" /><style>*{font-family:Consolas;color:#c8c8c8;background-color:#1e1e1e;}table,th,tr,td{border-collapse:collapse;border-color:#c8c8c8;}html{overflow:scroll;}td{white-space:nowrap;}</style></head><body>预测分析表：<br />");
+            stb.Append("<table border=\"1\">");
+            stb.Append("<tr><td></td>");
+
+            foreach(var item in TPMap)
+            {
+                stb.Append("<td>" + item.Key + "</td>");
+            }
+
+            stb.Append("</tr>");
+
+            foreach(var ntp in NTPMap)
+            {
+                stb.Append("<tr><td>" + ntp.Key + "</td>");
+
+                foreach(var tp in TPMap)
+                {
+                    var content = "";
+
+                    if(PredictAnalysisTable[ntp.Value,tp.Value].Name != null)
+                    {
+                        content = PredictAnalysisTable[ntp.Value,tp.Value].Name + " ->";
+
+                        foreach(var item in PredictAnalysisTable[ntp.Value,tp.Value].Content)
+                        {
+                            content += " &lt;" + item + "&gt;";
+                        }
+                    }
+
+                    stb.Append("<td>" + content + "</td>");
+                }
+
+                stb.Append("</tr>");
+            }
+
+            stb.Append("</table></body></html>");
+            CompileResult = stb.ToString();
             ErrorText = "[GrammarCompiler_LL_1]:Execute OK!\n";
             return true;
         }
@@ -882,11 +924,16 @@ namespace Compiler_Parser_Demo_WPF
             GenerateFirstSet();
             GenerateFollowSet();
             //Clipboard.SetText(GenerateProductionCode());
-            return GeneratePredictAnalysisTable(out ErrorText);
+            var r = GeneratePredictAnalysisTable(out ErrorText);
+            return r;
         }
 
         public bool Test(List<LexerWordInfo> WordList,out string ErrorText)
         {
+            var stb = new StringBuilder();
+            stb.Append("<!DOCTYPE html><html><head><meta http-equiv=\"Content-Type\" content=\"text/html;charset=utf-8\" /><style>*{font-family:Consolas;color:#c8c8c8;background-color:#1e1e1e;}table,th,tr,td{border-collapse:collapse;border-color:#c8c8c8;}html{overflow:scroll;}td{white-space:nowrap;}</style></head><body>分析过程：<br />");
+            stb.Append("<table border=\"1\">");
+            stb.Append("<tr><td>分析栈</td><td>剩余字符</td><td>所用产生式</td></tr>");
             ErrorText = "";
             var stack = new Stack<string>();
             var tplist = ProductionInfo.Production_ParserResult.tplist;
@@ -895,63 +942,108 @@ namespace Compiler_Parser_Demo_WPF
             stack.Push(StartSymbol);
             var index = 0;
 
-            while(true)
+            try
             {
-                var tpname = (index < WordList.Count) ? tplist[WordList[index].DFA.TerminalID].Name : "#";
-                var tpid = TPMap[tpname];
-                var curtop = stack.Pop();
+                while(true)
+                {
+                    var tpname = (index < WordList.Count) ? tplist[WordList[index].DFA.TerminalID].Name : "#";
+                    var tpid = TPMap[tpname];
+                    stb.Append("<tr><td>");
 
-                if(TPMap.ContainsKey(curtop))
-                {
-                    if(curtop == "#")
+                    foreach(var item in stack)
                     {
-                        if(tpname != "#")
+                        stb.Append((item == "#") ? "#" : ("&lt;" + item + "&gt"));
+                    }
+
+                    stb.Append("</td><td>");
+
+                    for(var i = index;i < WordList.Count;i++)
+                    {
+                        stb.Append("&lt;" + tplist[WordList[i].DFA.TerminalID].Name + "&gt;");
+                    }
+
+                    stb.Append("<td>");
+
+                    var curtop = stack.Pop();
+
+                    if(TPMap.ContainsKey(curtop))
+                    {
+                        if(curtop == "#")
                         {
-                            ErrorText = "期望终止符，遇到\"" + tpname + "\"";
-                            return false;
+                            if(tpname != "#")
+                            {
+                                ErrorText = "期望终止标记，遇到\"" + tpname + "\"";
+                                throw new Exception();
+                            }
+                            else
+                            {
+                                ErrorText = "检测通过，输入串完全匹配!";
+                                throw new Exception("true");
+                            }
                         }
                         else
                         {
-                            ErrorText = "检测通过，输入串完全匹配!";
-                            return true;
+                            if(tpname == curtop)
+                            {
+                                index++;
+                            }
+                            else
+                            {
+                                ErrorText = "期望\"" + curtop + "\"，遇到\"" + tpname + "\"";
+                                throw new Exception();
+                            }
                         }
                     }
-                    else
+                    else if(curtop == "epsilon")
                     {
-                        if(tpname == curtop)
-                        {
-                            index++;
-                        }
-                        else
-                        {
-                            ErrorText = "期望\"" + curtop + "\"，遇到\"" + tpname + "\"";
-                            return false;
-                        }
-                    }
-                }
-                else if(curtop == "epsilon")
-                {
                     
-                }
-                else
-                {
-                    if(PredictAnalysisTable[NTPMap[curtop],tpid].Name == null)
-                    {
-                        ErrorText = "不期望的字符：\"" + tpname + "\"";
-                        return false;
                     }
                     else
                     {
-                        var content = PredictAnalysisTable[NTPMap[curtop],tpid].Content;
-
-                        for(var i = content.Length - 1;i >= 0;i--)
+                        if(PredictAnalysisTable[NTPMap[curtop],tpid].Name == null)
                         {
-                            stack.Push(content[i]);
+                            ErrorText = "不期望的词：" + (tpname == "#" ? "终止标记" : "\"" + tpname + "\"");
+                            throw new Exception();
+                        }
+                        else
+                        {
+                            var content = PredictAnalysisTable[NTPMap[curtop],tpid].Content;
+                            stb.Append(PredictAnalysisTable[NTPMap[curtop],tpid].Name + " ->");
+                            
+                            foreach(var item in content)
+                            {
+                                stb.Append(" &lt;" + item + "&gt;");
+                            }
+
+                            for(var i = content.Length - 1;i >= 0;i--)
+                            {
+                                stack.Push(content[i]);
+                            }
                         }
                     }
+
+                    stb.Append("</td></tr>");
                 }
             }
+            catch(Exception ex)
+            {
+                return ex.Message == "true";
+            }
+            finally
+            {
+                stb.Append("</table></body></html>");
+                TestResult = stb.ToString();
+            }
+        }
 
+        public string GetCompileResult()
+        {
+            return CompileResult;
+        }
+
+        public string GetTestResult()
+        {
+            return TestResult;
         }
     }
 }

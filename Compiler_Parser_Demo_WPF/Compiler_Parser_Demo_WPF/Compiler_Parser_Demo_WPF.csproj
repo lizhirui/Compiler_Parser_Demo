@@ -4,6 +4,7 @@
     <OutputType>WinExe</OutputType>
     <TargetFramework>net46</TargetFramework>
     <UseWPF>true</UseWPF>
+    <SignAssembly>false</SignAssembly>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -180,5 +181,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="signtool.exe sign /sha1 9EC975EC859F03F079D69E8DBA52EBAED33A9C86 $(TargetPath)" />
+  </Target>
 
 </Project>

@@ -367,6 +367,7 @@ namespace Compiler_Parser_Demo_WPF
             else if(TaskType == typeof(GrammarCompiler))
             {
                 TextBox_Info.Text += Sender.GetTask<GrammarCompiler>().ErrorText;
+                WebBrowser_GrammarTest_Compile_Result.NavigateToString(Sender.GetTask<GrammarCompiler>().GrammarPreInfo.GrammarCompiler.GetCompileResult());
             }
         }
 
@@ -527,8 +528,9 @@ namespace Compiler_Parser_Demo_WPF
                 LexerTest_Error(errorstr);
                 return;
             }
-
+            
             grammarcompiler.GrammarPreInfo.GrammarCompiler.Test(result,out errorstr);
+            WebBrowser_GrammarTest_Test_Result.NavigateToString(grammarcompiler.GrammarPreInfo.GrammarCompiler.GetTestResult());
             MessageBox.Show(errorstr,"语法分析结果",MessageBoxButton.OK);
         }
     }
